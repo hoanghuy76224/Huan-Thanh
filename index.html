@@ -131,7 +131,7 @@
     font-style: italic;
     font-size: 18px; letter-spacing:.4em;
     color: var(--film-warm);
-    margin-bottom: 80px;
+    margin-bottom: 60px;
     opacity:.8;
   }
   .scene-open .duration{
@@ -681,45 +681,36 @@
     .subtitle{font-size: 18px; bottom: 14vh; width: 90%}
   }
 
-  .guest-scene{
-    background: var(--film-bg);
-    min-height: 100vh;
-    padding: 20vh 32px;
+  .guest-block{
     display:none;
-    flex-direction:column; align-items:center; justify-content:center;
-    text-align:center;
+    flex-direction:column; align-items:center;
+    margin-bottom: 20px;
   }
-  .guest-scene.show{display:flex}
-  .guest-head{
-    font-family:'Archivo', sans-serif;
-    font-size: 10px; letter-spacing:.5em; text-transform:uppercase;
-    color: rgba(246,236,216,.4);
-    margin-bottom: 50px;
-  }
+  .guest-block.show{display:flex}
   .guest-label{
     font-family:'Fraunces', serif;
     font-style: italic;
-    font-size: clamp(16px, 1.6vw, 22px);
+    font-size: clamp(14px, 1.4vw, 20px);
     letter-spacing:.25em;
     color: var(--film-warm);
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
   .guest-name{
     font-family:'Fraunces', serif;
     font-weight:900;
-    font-size: clamp(36px, 6vw, 84px);
+    font-size: clamp(30px, 4.6vw, 62px);
     line-height:1.1;
     color: var(--film-cream);
-    padding-bottom: 26px;
+    padding-bottom: 22px;
     border-bottom: 1px solid rgba(224,201,160,.35);
   }
   .guest-note{
-    margin-top: 40px;
+    margin-top: 32px;
     font-family:'Fraunces', serif;
     font-style: italic;
-    font-size: clamp(14px, 1.2vw, 18px);
+    font-size: clamp(13px, 1.1vw, 16px);
     color: rgba(246,236,216,.6);
-    max-width: 620px;
+    max-width: 560px;
     line-height:1.6;
   }
 </style>
@@ -756,6 +747,11 @@
   <div class="scene-overlay">
     <div class="studio">A Huấn &amp; Thanh Production</div>
     <div class="presents">presents</div>
+    <div class="guest-block" id="guestScene">
+      <div class="guest-label">Trân trọng kính mời</div>
+      <div class="guest-name" id="guestName"></div>
+      <div class="guest-note">Sự hiện diện của bạn là niềm vinh hạnh của gia đình chúng mình.</div>
+    </div>
     <div class="duration">— Scroll to begin —</div>
   </div>
 </section>
@@ -860,13 +856,6 @@
   <div class="num-big" data-rom="IV">IV</div>
   <div class="label">Chapter Four · Production Notes</div>
   <p class="quote">"Mọi câu chuyện đều có một ngày chính thức bắt đầu. Đây là ngày của chúng mình."</p>
-</section>
-
-<section class="guest-scene" id="guestScene" data-scene="12" data-name="INVITATION">
-  <div class="guest-head">— Special Guest —</div>
-  <div class="guest-label">Trân trọng kính mời</div>
-  <div class="guest-name" id="guestName"></div>
-  <div class="guest-note">Sự hiện diện của bạn là niềm vinh hạnh của gia đình chúng mình.</div>
 </section>
 
 <section class="credits" data-scene="13" data-name="DETAILS">
