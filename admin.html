@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Tạo link mời — Khắc Huấn &amp; Thanh Thanh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#2b241c;
+    --cream:#f6ecd8;
+    --warm:#e0c9a0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--bg);
+    color:var(--cream);
+    font-family:'Archivo', sans-serif;
+    min-height:100vh;
+    padding:48px 20px 80px;
+  }
+  .wrap{max-width:820px;margin:0 auto}
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:900;
+    font-size:clamp(28px,4vw,44px);
+    margin-bottom:8px;
+  }
+  h1 em{font-style:normal;color:var(--warm)}
+  .sub{
+    font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+    color:rgba(246,236,216,.45);margin-bottom:40px;
+  }
+  label{
+    display:block;font-size:10px;letter-spacing:.25em;text-transform:uppercase;
+    color:var(--warm);margin-bottom:10px;
+  }
+  input, textarea{
+    width:100%;
+    background:rgba(246,236,216,.05);
+    border:1px solid rgba(224,201,160,.3);
+    color:var(--cream);
+    font-family:'Archivo', sans-serif;
+    font-size:14px;
+    padding:14px 16px;
+    outline:none;
+    transition:border-color .3s;
+  }
+  input:focus, textarea:focus{border-color:var(--warm)}
+  textarea{min-height:150px;resize:vertical;line-height:1.7}
+  .field{margin-bottom:28px}
+  .hint{font-size:12px;color:rgba(246,236,216,.4);margin-top:8px;line-height:1.5}
+  button{
+    background:transparent;
+    border:1px solid var(--warm);
+    color:var(--warm);
+    font-family:'Archivo', sans-serif;
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    padding:13px 26px;
+    cursor:pointer;
+    transition:all .3s;
+  }
+  button:hover{background:rgba(224,201,160,.12)}
+  button.primary{background:var(--warm);color:var(--bg);font-weight:600}
+  button.primary:hover{opacity:.85}
+  .row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:44px}
+  .results{border-top:1px solid rgba(224,201,160,.2);padding-top:32px}
+  .results-head{
+    font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+    color:rgba(246,236,216,.45);margin-bottom:20px;
+  }
+  .item{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 0;
+    border-bottom:1px solid rgba(246,236,216,.08);
+  }
+  .item .who{
+    font-family:'Fraunces', serif;
+    font-weight:700;font-size:16px;
+    min-width:150px;
+  }
+  .item .link{
+    flex:1;font-size:12px;color:rgba(246,236,216,.5);
+    word-break:break-all;line-height:1.4;
+  }
+  .item button{padding:8px 14px;font-size:10px;white-space:nowrap}
+  .item button.done{background:var(--cream);color:var(--bg);border-color:var(--cream)}
+  .empty{color:rgba(246,236,216,.35);font-size:13px;font-style:italic}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tạo link mời <em>riêng</em></h1>
+  <div class="sub">Khắc Huấn &amp; Thanh Thanh · 26.07.2026</div>
+
+  <div class="field">
+    <label>Link gốc của thiệp</label>
+    <input id="base" type="text" placeholder="https://ten-thiep.khunglongcon.com">
+    <div class="hint">Dán URL thiệp sau khi deploy. Không cần dấu / ở cuối.</div>
+  </div>
+
+  <div class="field">
+    <label>Danh sách khách · mỗi dòng một người</label>
+    <textarea id="guests" placeholder="Anh Nguyễn Văn A&#10;Chị Trần Thị B&#10;Gia đình cô Ba&#10;Vợ chồng anh Tuấn"></textarea>
+    <div class="hint">Gõ đúng cách xưng hô muốn hiện trên thiệp. Ví dụ: Anh Tuấn &amp; Chị Mai.</div>
+  </div>
+
+  <div class="row">
+    <button class="primary" id="gen">Tạo link</button>
+    <button id="copyAll">Copy tất cả</button>
+    <button id="clear">Xoá</button>
+  </div>
+
+  <div class="results">
+    <div class="results-head">— Kết quả —</div>
+    <div id="out"><div class="empty">Chưa có link nào.</div></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var baseEl = document.getElementById('base');
+  var guestsEl = document.getElementById('guests');
+  var out = document.getElementById('out');
+  var rows = [];
+
+  try {
+    var saved = localStorage.getItem('wc_admin');
+    if (saved) {
+      var d = JSON.parse(saved);
+      baseEl.value = d.base || '';
+      guestsEl.value = d.guests || '';
+    }
+  } catch(e){}
+
+  function save(){
+    try {
+      localStorage.setItem('wc_admin', JSON.stringify({base: baseEl.value, guests: guestsEl.value}));
+    } catch(e){}
+  }
+  baseEl.addEventListener('input', save);
+  guestsEl.addEventListener('input', save);
+
+  function copy(text, btn, label){
+    function done(){
+      btn.classList.add('done');
+      var old = btn.textContent;
+      btn.textContent = label || 'Đã copy';
+      setTimeout(function(){ btn.classList.remove('done'); btn.textContent = old; }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function(){ fallback(text); done(); });
+    } else { fallback(text); done(); }
+  }
+  function fallback(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  function build(){
+    var base = baseEl.value.trim().replace(/\/+$/, '');
+    if (!base) { alert('Nhập link gốc của thiệp trước đã.'); return; }
+    var names = guestsEl.value.split('\n').map(function(x){ return x.trim(); }).filter(Boolean);
+    if (!names.length) { alert('Chưa có tên khách nào.'); return; }
+
+    rows = names.map(function(n){
+      return { name: n, url: base + '?guest=' + encodeURIComponent(n) };
+    });
+
+    out.innerHTML = '';
+    rows.forEach(function(r){
+      var div = document.createElement('div');
+      div.className = 'item';
+
+      var who = document.createElement('div');
+      who.className = 'who';
+      who.textContent = r.name;
+
+      var link = document.createElement('div');
+      link.className = 'link';
+      link.textContent = r.url;
+
+      var b = document.createElement('button');
+      b.textContent = 'Copy';
+      b.addEventListener('click', function(){ copy(r.url, b); });
+
+      div.appendChild(who); div.appendChild(link); div.appendChild(b);
+      out.appendChild(div);
+    });
+  }
+
+  document.getElementById('gen').addEventListener('click', build);
+
+  document.getElementById('copyAll').addEventListener('click', function(){
+    if (!rows.length) { alert('Tạo link trước đã.'); return; }
+    var text = rows.map(function(r){ return r.name + '\n' + r.url; }).join('\n\n');
+    copy(text, this, 'Đã copy hết');
+  });
+
+  document.getElementById('clear').addEventListener('click', function(){
+    guestsEl.value = '';
+    rows = [];
+    out.innerHTML = '<div class="empty">Chưa có link nào.</div>';
+    save();
+  });
+})();
+</script>
+</body>
+</html>
